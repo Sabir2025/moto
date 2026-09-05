@@ -109,7 +109,7 @@
     padding:22px 5vw;
     display:flex;
     justify-content:space-between;
-    align-items:flex-start;
+    align-items:center;
     transition:background .25s ease, border-color .25s ease;
     border-bottom:1px solid transparent;
   }
@@ -141,6 +141,9 @@
     gap:clamp(20px, 3.4vw, 48px);
   }
   nav{
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
     display:flex;
     align-items:center;
     gap:clamp(16px, 2.6vw, 38px);
@@ -296,8 +299,7 @@
     position:absolute;
     left:0; top:0;
     white-space:nowrap;
-    color:var(--black);
-    -webkit-text-stroke:1.5px var(--accent);
+    color:var(--accent);
     opacity:0;
     transform:translateY(65%);
     transition:transform .3s cubic-bezier(.65,0,.2,1), opacity .16s linear;
@@ -826,6 +828,8 @@
     nav.open{
       display:flex;
       position:fixed; top:0; right:0; bottom:0;
+      left:auto;
+      transform:none;
       width:55%;
       min-width:280px;
       max-width:400px;
