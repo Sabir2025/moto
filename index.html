@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTO-MIR — Шымкент</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+
+  /* ============ TOKENS ============ */
+  :root{
+    --black:#0b0b09;
+    --graphite:#18170f;
+    --panel:#1f1e15;
+    --steel:#4a473c;
+    --steel-lo:#2b2a22;
+    --paper:#ece7d8;
+    --paper-dim:#a8a394;
+    --accent:#f4c300;
+    --accent-dim:#8a7200;
+    --rust:#a4460f;
+    --rust-lo:#3a1c0c;
+    --r: 0px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--paper);
+    font-family:'Archivo', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent); color:var(--black);}
+
+  a{color:inherit; text-decoration:none;}
+  img{display:block; max-width:100%;}
+
+  .display{
+    font-family:'Archivo', sans-serif;
+    font-weight:500;
+    text-transform:uppercase;
+    line-height:0.85;
+    letter-spacing:0.001em;
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  .wrap{
+    max-width:1400px;
+    margin:0 auto;
+    padding:0 5vw;
+  }
+
+  /* film grain overlay, whole page */
+  .grain{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:500;
+    opacity:0.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* ============ TEXTURE PATTERNS (SVG data-uri) ============ */
+  .tx-asphalt{
+    background-color:#141310;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.03) 0, transparent 40%),
+      radial-gradient(circle at 70% 65%, rgba(255,255,255,.025) 0, transparent 35%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/></svg>");
+  }
+  .tx-tread{
+    background-color:#111008;
+    background-image: repeating-linear-gradient(115deg, #201f16 0 6px, #141309 6px 9px, #201f16 9px 22px, #0d0c07 22px 26px);
+  }
+  .tx-metal{
+    background:
+      linear-gradient(155deg, #55524a 0%, #26251e 18%, #3a3830 34%, #191811 55%, #45433a 72%, #201f18 100%);
+    background-size:200% 200%;
+  }
+  .tx-carbon{
+    background-color:#0e0e0a;
+    background-image:
+      linear-gradient(45deg, #17160f 25%, transparent 25%, transparent 75%, #17160f 75%, #17160f),
+      linear-gradient(45deg, #17160f 25%, transparent 25%, transparent 75%, #17160f 75%, #17160f);
+    background-size:10px 10px;
+    background-position:0 0, 5px 5px;
+  }
+
+  /* ============ HEADER ============ */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:400;
+    padding:22px 5vw;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    transition:background .25s ease, border-color .25s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(11,11,9,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--steel-lo);
+  }
+  .logo{
+    font-family:'Archivo', sans-serif;
+    font-weight:600;
+    font-size:clamp(22px, 2.6vw, 32px);
+    letter-spacing:0.01em;
+    line-height:0.9;
+  }
+  .logo span{color:var(--accent);}
+  .logo small{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.18em;
+    color:var(--paper-dim);
+    margin-top:4px;
+    font-weight:500;
+  }
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:clamp(20px, 3.4vw, 48px);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    gap:clamp(16px, 2.6vw, 38px);
+  }
+  nav a{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    font-size:14px;
+    font-weight:400;
+    color:var(--paper);
+    padding:4px 0 4px 16px;
+  }
+  nav a::before{
+    content:'';
+    position:absolute; left:0; top:50%;
+    transform:translateY(-50%) scale(0);
+    width:7px; height:7px;
+    background:var(--accent);
+    transition:transform .15s cubic-bezier(.2,.7,.2,1);
+  }
+  nav a:hover::before,
+  nav a.active::before{
+    transform:translateY(-50%) scale(1);
+  }
+  nav a:hover,
+  nav a.active{
+    color:var(--accent);
+  }
+  .wa-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    background:#25D366;
+    color:#0b0b09;
+    font-weight:400;
+    font-size:13px;
+    padding:12px 18px;
+    clip-path:polygon(0 0, 100% 0, 100% 78%, 91% 100%, 0 100%);
+    white-space:nowrap;
+    transition:background .15s ease, padding-right .15s ease, transform .12s ease;
+  }
+  .wa-btn i.fa-whatsapp{ font-size:17px; }
+  .wa-btn .arrow{
+    display:inline-block;
+    width:0;
+    overflow:hidden;
+    opacity:0;
+    transition:width .18s ease, opacity .18s ease;
+  }
+  .wa-btn:hover{
+    background:#1fb659;
+    transform:translate(-1px,-1px);
+  }
+  .wa-btn:hover .arrow{
+    width:14px;
+    opacity:1;
+  }
+  .phone-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    font-weight:400;
+    color:var(--accent);
+    padding:10px 0;
+    white-space:nowrap;
+    transition:opacity .15s ease;
+  }
+  .phone-btn i{ font-size:12px; color:var(--accent); }
+  .phone-btn:hover{ opacity:.75; }
+  .burger{
+    display:none;
+    flex-direction:column;
+    gap:0;
+    background:none; border:none; cursor:pointer;
+    padding:8px;
+    position:relative;
+    width:34px; height:34px;
+    z-index:401;
+  }
+  .burger span{ width:22px; height:2px; background:var(--paper); display:block; transition:all .3s cubic-bezier(.4,0,.2,1); position:absolute; left:6px; }
+  .burger span:nth-child(1){ top:9px; }
+  .burger span:nth-child(2){ top:16px; }
+  .burger span:nth-child(3){ top:23px; }
+  .burger.active span:nth-child(1){ top:16px; transform:rotate(45deg); }
+  .burger.active span:nth-child(2){ opacity:0; transform:scaleX(0); }
+  .burger.active span:nth-child(3){ top:16px; transform:rotate(-45deg); }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    padding-top:100px;
+    background-image:url('https://images.pexels.com/photos/31154601/pexels-photo-31154601/free-photo-of-stylish-motorcycle-on-open-highway-at-sunset.png?auto=compress&cs=tinysrgb&w=1400');
+    background-size:cover;
+    background-position:center;
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(11,11,9,0.88) 0%, rgba(11,11,9,0.55) 50%, rgba(11,11,9,0.7) 100%);
+    z-index:1;
+  }
+  .hero-left{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:40px clamp(20px,5vw,64px) 60px;
+    z-index:2;
+  }
+  .hero-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+    letter-spacing:0.06em;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .hero-tag::before{
+    content:'';
+    width:26px; height:1px;
+    background:var(--accent);
+  }
+  .hero-tag i{
+    font-size:11px;
+    margin:0 6px 0 10px;
+  }
+  .hero-tag i:first-child{ margin-left:0; }
+  .hero h1{
+    font-size:clamp(58px, 9.4vw, 148px);
+    color:var(--paper);
+  }
+  .hero h1 .hl-rotate{
+    position:relative;
+    display:inline-block;
+    vertical-align:top;
+    overflow:hidden;
+  }
+  .hl-sizer{
+    visibility:hidden;
+    display:block;
+    white-space:nowrap;
+    pointer-events:none;
+  }
+  .hl-word{
+    position:absolute;
+    left:0; top:0;
+    white-space:nowrap;
+    color:var(--black);
+    -webkit-text-stroke:1.5px var(--accent);
+    opacity:0;
+    transform:translateY(65%);
+    transition:transform .3s cubic-bezier(.65,0,.2,1), opacity .16s linear;
+  }
+  .hl-word.is-active{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .hl-word.is-prev{
+    opacity:0;
+    transform:translateY(-65%);
+  }
+  .hero-sub{
+    max-width:440px;
+    margin-top:28px;
+    font-size:17px;
+    line-height:1.55;
+    color:var(--paper-dim);
+  }
+  .hero-cta-row{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    margin-top:42px;
+    flex-wrap:wrap;
+  }
+  .cta{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--accent);
+    color:var(--black);
+    font-weight:500;
+    font-size:15px;
+    padding:17px 30px;
+    clip-path:polygon(0 0, 100% 0, 100% 70%, 92% 100%, 0 100%);
+    border:none;
+    cursor:pointer;
+    transition:transform .12s ease, background .12s ease;
+  }
+  .cta:hover{ background:var(--paper); transform:translate(-2px,-2px); }
+  .cta:active{ transform:translate(0,0); }
+  .cta-ghost{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    font-size:14px;
+    font-weight:500;
+    color:var(--paper);
+    border-bottom:1px solid var(--steel);
+    padding-bottom:3px;
+  }
+  .cta-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .hero-right{
+    display:none;
+  }
+  .hero-right .tx-metal{ display:none; }
+  .hero-photo{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:60% 45%;
+    filter:grayscale(0.55) contrast(1.2) brightness(0.55) sepia(0.18) saturate(1.4);
+  }
+  .hero-right::after{
+    content:'';
+    position:absolute; inset:0;
+    z-index:1;
+    background:linear-gradient(200deg, rgba(244,195,0,.28) 0%, rgba(11,11,9,.15) 30%, rgba(11,11,9,.75) 100%);
+    mix-blend-mode:multiply;
+  }
+  .hero-right .tx-tread{
+    position:absolute;
+    inset:0;
+    clip-path:polygon(0 78%, 100% 66%, 100% 100%, 0 100%);
+    opacity:.85;
+    z-index:1;
+  }
+  .hero-spark{ display:none; }
+  .hero-num{ display:none; }
+  .hero-year{ display:none; }
+
+  /* ============ MARQUEE STRIP ============ */
+  .strip{
+    background:var(--accent);
+    color:var(--black);
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:3px solid var(--black);
+    border-bottom:3px solid var(--black);
+  }
+  .strip-track{
+    display:inline-flex;
+    animation:scroll-strip 26s linear infinite;
+  }
+  .strip-track span{
+    font-family:'Archivo', sans-serif;
+    font-weight:500;
+    font-size:16px;
+    padding:12px 34px;
+    text-transform:uppercase;
+    display:inline-flex;
+    align-items:center;
+    gap:34px;
+  }
+  .strip-track span::after{ content:'|'; font-size:13px; }
+  @keyframes scroll-strip{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-40%); }
+  }
+
+  /* ============ SECTION HEADS ============ */
+  .sec{ padding:120px 0; position:relative; }
+  .sec-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin-bottom:60px;
+    flex-wrap:wrap;
+  }
+  .sec-head h2{
+    font-size:clamp(40px, 6vw, 84px);
+    max-width:760px;
+  }
+  .sec-head .idx{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--paper-dim);
+    font-size:13px;
+    padding-bottom:12px;
+  }
+
+  /* ============ ABOUT (editorial) ============ */
+  .about{ background:var(--graphite); }
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.4fr 0.9fr;
+    gap:48px;
+  }
+  .about-lede{
+    font-size:22px;
+    line-height:1.4;
+    font-weight:500;
+    color:var(--paper);
+    align-self:start;
+  }
+  .about-lede em{
+    font-style:normal;
+    color:var(--accent);
+  }
+  .about-body{
+    columns:2;
+    column-gap:40px;
+    font-size:15px;
+    line-height:1.7;
+    color:var(--paper-dim);
+  }
+  .about-body p{ margin-bottom:16px; break-inside:avoid; }
+  .about-facts{
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+  }
+  .fact{
+    border-top:1px solid var(--steel-lo);
+    padding-top:14px;
+  }
+  .fact b{
+    font-family:'Archivo', sans-serif;
+    font-weight:800;
+    font-size:clamp(44px,4.2vw,64px);
+    display:block;
+    color:var(--accent);
+    line-height:1;
+  }
+  .fact span{
+    font-size:13px;
+    color:var(--paper-dim);
+    display:block;
+    margin-top:6px;
+    max-width:220px;
+  }
+
+  /* ============ CATALOG (asymmetric) ============ */
+  .catalog{ background:var(--black); }
+  .cat-grid{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .cat-row-top{
+    display:flex;
+    gap:14px;
+  }
+  .cat-card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--steel-lo);
+    display:flex;
+    align-items:flex-end;
+    padding:26px;
+    isolation:isolate;
+  }
+  .cat-card .bg{ position:absolute; inset:0; z-index:-2; }
+  .cat-card .fade{
+    position:absolute; inset:0; z-index:-1;
+    background:linear-gradient(0deg, rgba(11,11,9,.92) 0%, rgba(11,11,9,.35) 50%, rgba(11,11,9,.05) 100%);
+  }
+  .cat-card .num{
+    position:absolute; top:20px; right:22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--paper-dim);
+    z-index:1;
+  }
+  .cat-card h3{
+    font-size:clamp(26px,3vw,42px);
+    line-height:0.95;
+  }
+  .cat-card p{
+    font-size:13px;
+    color:var(--paper-dim);
+    max-width:280px;
+    margin-top:8px;
+  }
+  .cat-card .go{
+    margin-top:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+  }
+  .cat-card .go i{
+    transition:transform .2s cubic-bezier(.2,.7,.2,1);
+  }
+  .cat-card:hover .go i{ transform:translateX(6px); }
+  .cat-card:hover h3{ color:var(--accent); transition:color .15s; }
+  .cat-card .icon-badge{
+    position:absolute; top:20px; left:22px;
+    width:38px; height:38px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(11,11,9,.7);
+    border:1px solid var(--accent);
+    color:var(--accent);
+    font-size:15px;
+    z-index:1;
+  }
+  .cat-card img.bg{
+    width:100%; height:100%;
+    object-fit:cover;
+    filter:grayscale(0.4) contrast(1.15) brightness(0.62);
+    transition:filter .3s ease, transform .4s ease;
+  }
+  .cat-card:hover img.bg{
+    filter:grayscale(0) contrast(1.1) brightness(0.85);
+    transform:scale(1.04);
+  }
+  .cat-card:hover .fade{
+    background:linear-gradient(0deg, rgba(11,11,9,.85) 0%, rgba(11,11,9,.2) 50%, rgba(11,11,9,0) 100%);
+  }
+
+  .cat-main{ flex:1.2; min-height:480px; }
+  .cat-side{ flex:1; display:flex; flex-direction:column; gap:14px; }
+  .cat-side .cat-card{ flex:1; }
+  .cat-full{ height:320px; }
+
+  /* ============ CONTACTS ============ */
+  .contact{ background:var(--graphite); }
+  .contact-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border:1px solid var(--steel-lo);
+  }
+  .contact-info{
+    padding:56px clamp(24px,4vw,56px);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:40px;
+  }
+  .contact-addr{
+    font-size:clamp(32px,4.4vw,54px);
+    line-height:0.98;
+  }
+  .contact-addr span{ color:var(--accent); }
+  .contact-rows{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .crow{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border-bottom:1px solid var(--steel-lo);
+    padding-bottom:14px;
+    font-size:14px;
+    transition:gap .15s ease;
+  }
+  a.crow:hover{ gap:20px; }
+  a.crow:hover .v{ color:var(--accent); }
+  .crow .k{
+    flex:none;
+    width:34px; height:34px;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--steel);
+    color:var(--accent);
+    font-size:13px;
+  }
+  .crow .v{ font-family:'JetBrains Mono', monospace; color:var(--paper); letter-spacing:.02em; transition:color .15s ease; }
+  .map-wrap{
+    position:relative;
+    min-height:420px;
+    border-left:1px solid var(--steel-lo);
+  }
+  .map-wrap iframe{
+    width:100%; height:100%;
+    position:absolute; inset:0;
+    border:0;
+    filter:invert(94%) hue-rotate(180deg) brightness(0.86) contrast(1.05) saturate(0.6);
+  }
+  .map-pin{
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-100%);
+    z-index:2;
+    pointer-events:none;
+  }
+  .map-label{
+    position:absolute; bottom:18px; left:18px;
+    display:flex; align-items:center; gap:8px;
+    background:var(--accent);
+    color:var(--black);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:8px 12px;
+    z-index:2;
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    background:var(--black);
+    border-top:1px solid var(--steel-lo);
+    padding:40px 0 28px;
+  }
+  .foot-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    font-size:12px;
+    color:var(--paper-dim);
+    font-family:'JetBrains Mono', monospace;
+  }
+  .foot-logo{
+    font-family:'Archivo', sans-serif;
+    font-weight:800;
+    font-size:20px;
+    color:var(--paper);
+  }
+  .foot-links{
+    display:flex;
+    gap:14px;
+  }
+  .foot-links a{
+    width:34px; height:34px;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--steel-lo);
+    color:var(--paper-dim);
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .foot-links a:hover{ color:var(--accent); border-color:var(--accent); }
+
+  /* scroll reveal */
+  .rv{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .5s cubic-bezier(.2,.7,.2,1), transform .5s cubic-bezier(.2,.7,.2,1);
+  }
+  .rv.in{ opacity:1; transform:translateY(0); }
+
+  /* ============ SCROLL TO TOP ============ */
+  .scroll-top{
+    position:fixed;
+    bottom:32px; right:32px;
+    width:48px; height:48px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--accent);
+    color:var(--black);
+    border:none; cursor:pointer;
+    font-size:18px;
+    z-index:450;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .3s ease, transform .3s ease, background .15s ease;
+    pointer-events:none;
+  }
+  .scroll-top.visible{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+  }
+  .scroll-top:hover{ background:var(--paper); }
+
+  /* ============ HERO SCROLL HINT ============ */
+  .scroll-hint{
+    position:absolute;
+    bottom:40px;
+    right:60px;
+    z-index:3;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-hint span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:.18em;
+    color:var(--paper-dim);
+    writing-mode:vertical-rl;
+    text-transform:uppercase;
+  }
+  .scroll-hint .scroll-line{
+    width:1px;
+    height:50px;
+    background:var(--steel);
+    position:relative;
+    overflow:hidden;
+  }
+  .scroll-hint .scroll-line::after{
+    content:'';
+    position:absolute;
+    top:-100%;
+    left:0;
+    width:100%;
+    height:100%;
+    background:var(--accent);
+    animation:scroll-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes scroll-pulse{
+    0%{ top:-100%; }
+    50%{ top:100%; }
+    100%{ top:100%; }
+  }
+  .scroll-hint .scroll-arrow{
+    width:10px; height:10px;
+    border-right:1px solid var(--accent);
+    border-bottom:1px solid var(--accent);
+    transform:rotate(45deg);
+    animation:scroll-bounce 1.8s ease-in-out infinite;
+  }
+  @keyframes scroll-bounce{
+    0%,100%{ transform:rotate(45deg) translateY(0); opacity:1; }
+    50%{ transform:rotate(45deg) translateY(6px); opacity:.4; }
+  }
+
+  /* ============ RESPONSIVE ============ */
+
+  /* --- TABLET LANDSCAPE ≤1024 --- */
+  @media(max-width:1024px){
+    .wrap{ padding:0 4vw; }
+    .hero h1{ font-size:clamp(48px, 8vw, 110px); }
+    .hero-sub{ max-width:380px; font-size:16px; }
+    .sec-head h2{ font-size:clamp(36px, 5.5vw, 72px); }
+    .about-grid{ gap:32px; }
+    .about-lede{ font-size:20px; }
+    .cat-main{ min-height:400px; }
+    .contact-addr{ font-size:clamp(28px, 4vw, 48px); }
+  }
+
+  /* --- TABLET PORTRAIT ≤900 --- */
+  @media(max-width:900px){
+    .hero{
+      min-height:auto;
+      padding-top:90px;
+      padding-bottom:48px;
+      background-position:center 30%;
+    }
+    .hero-left{ padding:24px clamp(16px,4vw,40px) 40px; }
+    .hero h1{ font-size:clamp(42px, 9vw, 80px); }
+    .hero-sub{ max-width:100%; font-size:15px; margin-top:20px; }
+    .hero-cta-row{ gap:16px; margin-top:28px; }
+    .cta{ padding:14px 24px; font-size:14px; }
+    .cta-ghost{ font-size:13px; }
+
+    .sec{ padding:80px 0; }
+    .sec-head{ margin-bottom:40px; }
+    .sec-head h2{ font-size:clamp(32px, 6vw, 56px); }
+
+    .about-grid{ grid-template-columns:1fr; gap:36px; }
+    .about-body{ columns:1; }
+    .about-lede{ font-size:18px; }
+
+    .cat-row-top{ flex-direction:column; }
+    .cat-main{ min-height:300px; }
+    .cat-side{ flex-direction:row; }
+    .cat-side .cat-card{ min-height:240px; }
+    .cat-full{ height:260px; }
+    .cat-card{ padding:20px; }
+    .cat-card h3{ font-size:clamp(22px, 3vw, 36px); }
+
+    .contact-grid{ grid-template-columns:1fr; }
+    .contact-info{ padding:40px clamp(20px,4vw,40px); }
+    .map-wrap{ min-height:320px; border-left:none; border-top:1px solid var(--steel-lo); }
+
+    .scroll-top{ width:42px; height:42px; bottom:24px; right:24px; font-size:16px; }
+  }
+
+  /* --- MOBILE LANDSCAPE ≤768 --- */
+  @media(max-width:768px){
+    .wrap{ padding:0 20px; }
+
+    nav{ display:none; }
+    .burger{ display:flex; }
+    .wa-btn{ padding:10px 14px; font-size:0; gap:0; }
+    .wa-btn i.fa-whatsapp{ font-size:18px; }
+    .wa-btn .arrow{ display:none; }
+    .phone-btn{ font-size:0; padding:10px; gap:0; }
+    .phone-btn i{ font-size:16px; }
+    nav.open{
+      display:flex;
+      position:fixed; top:0; right:0; bottom:0;
+      width:55%;
+      min-width:280px;
+      max-width:400px;
+      background:var(--graphite);
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      padding:80px 40px 40px;
+      gap:24px;
+      z-index:400;
+      border-left:1px solid var(--steel-lo);
+      box-shadow:-10px 0 40px rgba(0,0,0,.5);
+    }
+    nav.open::before{
+      content:'';
+      position:fixed; top:0; left:0; bottom:0;
+      width:calc(100% - 55%);
+      background:rgba(11,11,9,.5);
+      z-index:-1;
+    }
+    nav.open a{
+      font-size:22px;
+      font-family:'Archivo', sans-serif;
+      font-weight:400;
+      text-transform:uppercase;
+      padding-left:16px;
+      transition:color .15s ease;
+    }
+    nav.open a:hover{ color:var(--accent); }
+
+    header{ padding:16px 20px; }
+    .logo{ font-size:20px; }
+    .logo small{ font-size:9px; }
+
+    .hero{
+      padding-top:80px;
+      padding-bottom:32px;
+      background-position:center 25%;
+    }
+    .hero-left{ padding:20px 0 32px; }
+    .hero h1{ font-size:clamp(36px, 11vw, 64px); line-height:0.88; }
+    .hero-tag{ font-size:10px; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+    .hero-tag i{ font-size:10px; margin:0 4px; }
+    .hero-sub{ font-size:14px; line-height:1.5; margin-top:16px; }
+    .hero-cta-row{ gap:14px; margin-top:24px; }
+    .cta{ padding:14px 20px; font-size:13px; white-space:nowrap; }
+    .cta-ghost{ font-size:12px; white-space:nowrap; }
+
+    .strip-track span{ font-size:13px; padding:10px 20px; gap:20px; }
+
+    .sec{ padding:60px 0; }
+    .sec-head{ margin-bottom:32px; }
+    .sec-head h2{ font-size:clamp(28px, 7vw, 44px); }
+    .sec-head .idx{ font-size:11px; padding-bottom:8px; }
+
+    .about-lede{ font-size:16px; line-height:1.45; }
+    .about-body{ font-size:14px; line-height:1.65; }
+    .fact b{ font-size:clamp(36px, 8vw, 52px); }
+
+    .cat-row-top{ flex-direction:column; }
+    .cat-main{ min-height:260px; }
+    .cat-side{ flex-direction:column; }
+    .cat-side .cat-card{ min-height:200px; }
+    .cat-full{ height:220px; }
+    .cat-card{ padding:18px; }
+    .cat-card h3{ font-size:clamp(20px, 5vw, 30px); }
+    .cat-card p{ font-size:12px; }
+    .cat-card .icon-badge{ width:32px; height:32px; font-size:13px; top:14px; left:14px; }
+    .cat-card .num{ top:14px; right:14px; font-size:11px; }
+
+    .contact-info{ padding:32px 20px; gap:28px; }
+    .contact-addr{ font-size:clamp(24px, 6vw, 36px); }
+    .crow{ font-size:13px; gap:12px; padding-bottom:12px; }
+    .crow .k{ width:30px; height:30px; font-size:12px; }
+    .map-wrap{ min-height:280px; }
+
+    .foot-row{ flex-direction:column; align-items:center; text-align:center; gap:14px; padding:28px 0 20px; }
+    .foot-logo{ font-size:18px; }
+
+    .scroll-hint{ display:none; }
+    .scroll-top{ width:40px; height:40px; bottom:20px; right:20px; font-size:15px; border-radius:0; }
+  }
+
+  /* --- MOBILE PORTRAIT ≤480 --- */
+  @media(max-width:480px){
+    .wrap{ padding:0 16px; }
+    header{ padding:14px 16px; }
+    .logo{ font-size:18px; }
+    .logo small{ font-size:8px; letter-spacing:0.12em; }
+
+    .hero{
+      padding-top:70px;
+      padding-bottom:24px;
+      background-size:cover;
+      background-position:center 20%;
+    }
+    .hero-left{ padding:16px 0 24px; }
+    .hero h1{ font-size:clamp(30px, 12vw, 52px); }
+    .hero-tag{ font-size:9px; margin-bottom:12px; }
+    .hero-tag::before{ width:16px; }
+    .hero-sub{ font-size:13px; }
+    .hero-cta-row{ gap:12px; margin-top:20px; }
+    .cta{ padding:14px 20px; font-size:13px; }
+    .cta-ghost{ font-size:12px; }
+
+    .strip-track span{ font-size:12px; padding:8px 16px; gap:16px; }
+
+    .sec{ padding:48px 0; }
+    .sec-head{ margin-bottom:28px; }
+    .sec-head h2{ font-size:clamp(24px, 8vw, 36px); }
+
+    .about-lede{ font-size:15px; }
+    .about-body{ font-size:13px; }
+    .about-facts{ gap:20px; }
+    .fact b{ font-size:clamp(32px, 9vw, 44px); }
+    .fact span{ font-size:12px; }
+
+    .cat-main{ min-height:220px; }
+    .cat-side .cat-card{ min-height:180px; }
+    .cat-full{ height:200px; }
+    .cat-card{ padding:14px; }
+    .cat-card h3{ font-size:clamp(18px, 5.5vw, 26px); }
+
+    .contact-addr{ font-size:clamp(20px, 7vw, 30px); }
+    .contact-rows{ gap:14px; }
+    .crow{ font-size:12px; gap:10px; padding-bottom:10px; }
+    .map-wrap{ min-height:240px; }
+    .map-label{ font-size:10px; padding:6px 10px; bottom:12px; left:12px; }
+
+    .scroll-top{ width:36px; height:36px; bottom:16px; right:16px; font-size:14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header id="siteHeader">
+  <a href="#" class="logo">MOTO-MIR
+    <small>ШЫМКЕНТ / МОТОСАЛОН</small>
+  </a>
+  <div class="header-right">
+    <nav id="mainNav">
+      <a href="#about" data-section="about">Компания</a>
+      <a href="#catalog" data-section="catalog">Каталог</a>
+      <a href="#contact" data-section="contact">Контакты</a>
+    </nav>
+    <a class="phone-btn" href="tel:+77004511216">
+      <i class="fa-solid fa-phone"></i>
+      +7 700 451 12 16
+    </a>
+    <a class="wa-btn" href="https://wa.me/77004511216" target="_blank" rel="noopener">
+      <i class="fa-brands fa-whatsapp"></i>
+      Связаться с нами
+      <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><i class="fa-solid fa-motorcycle"></i> МОТОТЕХНИКА <i class="fa-solid fa-gear"></i> ЗАПЧАСТИ <i class="fa-solid fa-helmet-safety"></i> ЭКИПИРОВКА</div>
+    <h1 class="display">ЕДЕТ ТО, ЧТО<br><span class="hl-rotate" id="heroRotate">
+      <span class="hl-sizer" aria-hidden="true">ПРОВЕРЕНО</span>
+      <span class="hl-word is-active">СОБРАНО</span>
+      <span class="hl-word">ПРОВЕРЕНО</span>
+      <span class="hl-word">НАСТРОЕНО</span>
+    </span><br>ЧЕСТНО</h1>
+    <p class="hero-sub">Мотосалон в Шымкенте: продажа мотоциклов, скутеров, квадроциклов, подбор запчастей и мотоэкипировки. Без переплат за бренд — с гарантией на каждую гайку.</p>
+    <div class="hero-cta-row">
+      <a href="#catalog" class="cta">Подобрать технику <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="#contact" class="cta-ghost"><i class="fa-solid fa-location-dot"></i> Как доехать?</a>
+    </div>
+  </div>
+  <div class="hero-right"></div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="strip-track">
+    <span>Продажа мотоциклов</span><span>Оригинальные запчасти</span><span>Мотоэкипировка</span><span>Квадроциклы</span>
+    <span>Продажа мотоциклов</span><span>Оригинальные запчасти</span><span>Мотоэкипировка</span><span>Квадроциклы</span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section class="sec about" id="about">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2 class="display">О компании</h2>
+      <div class="idx">01 / О НАС</div>
+    </div>
+    <div class="about-grid">
+      <p class="about-lede rv">Мы начинали с небольшого магазина запчастей в Шымкенте и постепенно выросли в <em>крупный</em> мотосалон региона — но к каждому покупателю относимся так, словно он наш первый.</p>
+      <div class="about-body rv">
+        <p>Moto-Mir — это шоурум и склад запчастей под одной крышей. Мы возим технику напрямую от производителей и дистрибьюторов, поэтому цена не раздута посредниками.</p>
+        <p>Экипировку подбираем по посадке, а не по каталогу: шлемы, куртки и перчатки нужно примерить, поэтому в шоуруме всегда открыт весь размерный ряд.</p>
+        <p>Работаем с частными покупателями и доставками по Туркестанской области — техника приходит собранной и проверенной на стенде.</p>
+      </div>
+      <div class="about-facts rv">
+        <div class="fact"><b>11</b><span>лет на рынке мототехники Шымкента</span></div>
+        <div class="fact"><b>4200+</b><span>единиц техники продано за это время</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATALOG ============ -->
+<section class="sec catalog" id="catalog">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2 class="display">Что в<br>наличии</h2>
+      <div class="idx">02 / КАТАЛОГ НАПРАВЛЕНИЙ</div>
+    </div>
+    <div class="cat-grid rv">
+      <div class="cat-row-top">
+        <div class="cat-card cat-main">
+          <img class="bg" src="https://images.pexels.com/photos/18447626/pexels-photo-18447626/free-photo-of-royal-enfield-himalayan-motorcycle-on-the-street.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Мотоцикл на улице" loading="lazy">
+          <div class="fade"></div>
+          <div class="icon-badge"><i class="fa-solid fa-motorcycle"></i></div>
+          <div class="num mono">01</div>
+          <div>
+            <h3 class="display">Мототехника</h3>
+            <p>Мотоциклы, скутеры, мопеды и квадроциклы — от городских до эндуро. Наличие и заказ под клиента.</p>
+            <span class="go">СМОТРЕТЬ МОДЕЛИ <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+        <div class="cat-side">
+          <div class="cat-card">
+            <img class="bg" src="https://images.pexels.com/photos/185545/pexels-photo-185545.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Мотозапчасти крупным планом" loading="lazy">
+            <div class="fade"></div>
+            <div class="icon-badge"><i class="fa-solid fa-gears"></i></div>
+            <div class="num mono">02</div>
+            <div>
+              <h3 class="display">Запчасти</h3>
+              <p>Оригинал и аналоги в наличии и под заказ.</p>
+            </div>
+          </div>
+          <div class="cat-card">
+            <img class="bg" src="https://images.pexels.com/photos/28051514/pexels-photo-28051514/free-photo-of-riding-gears.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Мотоэкипировка" loading="lazy">
+            <div class="fade"></div>
+            <div class="icon-badge"><i class="fa-solid fa-helmet-safety"></i></div>
+            <div class="num mono">03</div>
+            <div>
+              <h3 class="display">Экипировка</h3>
+              <p>Шлемы, куртки, перчатки, защита.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cat-card cat-full">
+        <img class="bg" src="https://images.pexels.com/photos/9381058/pexels-photo-9381058/free-photo-of-bottles-and-containers-on-shop-shelves.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Мотохимия — масла и жидкости" loading="lazy">
+        <div class="fade"></div>
+        <div class="icon-badge"><i class="fa-solid fa-droplet"></i></div>
+        <div class="num mono">04</div>
+        <div>
+          <h3 class="display">Мотохимия</h3>
+          <p>Масла, тормозные жидкости, очистители и уход за пластиком и хромом.</p>
+          <span class="go">В КАТАЛОГ <i class="fa-solid fa-arrow-right"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACTS ============ -->
+<section class="sec contact" id="contact" style="padding-bottom:0;">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2 class="display">Заедете?</h2>
+      <div class="idx">03 / КОНТАКТЫ И КАРТА</div>
+    </div>
+  </div>
+  <div class="contact-grid rv">
+    <div class="contact-info">
+      <div class="contact-addr display">УЛ. МАНШУК<br><span>МАМЕТОВОЙ 109</span></div>
+      <div class="contact-rows">
+        <a class="crow" href="tel:+77004511216">
+          <span class="k"><i class="fa-solid fa-phone"></i></span>
+          <span class="v mono">+7 700 451 12 16</span>
+        </a>
+        <div class="crow">
+          <span class="k"><i class="fa-regular fa-clock"></i></span>
+          <span class="v mono">ПН–СБ 09:00–19:00</span>
+        </div>
+        <div class="crow">
+          <span class="k"><i class="fa-solid fa-location-dot"></i></span>
+          <span class="v mono">Г. ШЫМКЕНТ</span>
+        </div>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <iframe src="https://www.google.com/maps?q=%D0%A8%D1%8B%D0%BC%D0%BA%D0%B5%D0%BD%D1%82%2C+%D1%83%D0%BB%D0%B8%D1%86%D0%B0+%D0%9C%D0%B0%D0%BD%D1%88%D1%83%D0%BA+%D0%9C%D0%B0%D0%BC%D0%B5%D1%82%D0%BE%D0%B2%D0%BE%D0%B9+109&output=embed" loading="lazy" title="Карта — Шымкент, ул. Маншук Маметовой 109"></iframe>
+      <div class="map-label mono"><i class="fa-solid fa-location-dot"></i> УЛ. МАНШУК МАМЕТОВОЙ, 109</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-logo">MOTO-MIR</div>
+    <div class="foot-links">
+      <a href="tel:+77004511216" aria-label="Телефон"><i class="fa-solid fa-phone"></i></a>
+      <a href="https://wa.me/77004511216" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="#contact" aria-label="Адрес на карте"><i class="fa-solid fa-location-dot"></i></a>
+    </div>
+    <span>© 2026 MOTO-MIR.KZ</span>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" aria-label="Наверх"><i class="fa-solid fa-arrow-up"></i></button>
+
+<script>
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  const rotateWrap = document.getElementById('heroRotate');
+  if(rotateWrap){
+    const words = Array.from(rotateWrap.querySelectorAll('.hl-word'));
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(words.length > 1 && !prefersReduced){
+      let idx = 0;
+      setInterval(() => {
+        const current = words[idx];
+        idx = (idx + 1) % words.length;
+        const next = words[idx];
+        current.classList.remove('is-active');
+        current.classList.add('is-prev');
+        next.classList.remove('is-prev');
+        next.classList.add('is-active');
+        setTimeout(() => current.classList.remove('is-prev'), 320);
+      }, 2000);
+    }
+  }
+
+  const burger = document.getElementById('burgerBtn');
+  const nav = document.getElementById('mainNav');
+  function closeMenu(){
+    nav.classList.remove('open');
+    burger.classList.remove('active');
+  }
+  burger.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    burger.classList.toggle('active');
+  });
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('click', (e) => {
+    if(nav.classList.contains('open') && !nav.contains(e.target) && !burger.contains(e.target)){
+      closeMenu();
+    }
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  const navLinks = document.querySelectorAll('#mainNav a[data-section]');
+  const spySections = Array.from(navLinks).map(a => document.getElementById(a.dataset.section)).filter(Boolean);
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        navLinks.forEach(a => a.classList.toggle('active', a.dataset.section === e.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  spySections.forEach(sec => spy.observe(sec));
+
+  const scrollBtn = document.getElementById('scrollTop');
+  const footer = document.querySelector('footer');
+  const footerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      scrollBtn.classList.toggle('visible', e.isIntersecting);
+    });
+  }, { threshold: 0.1 });
+  footerObserver.observe(footer);
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
